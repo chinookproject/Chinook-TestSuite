@@ -164,3 +164,8 @@ $mock->SomeMethod('message'); // Will return the string: 'some value'
 </pre>
 
 This is obviously not a real world example, but it should illustrate the idea.
+
+Run Unit Tests
+==============
+
+When you have created your unit tests then these can easily be run from the browser. Simply browse to **"TestSuit/CFunit/CFWebRunner.php"**
