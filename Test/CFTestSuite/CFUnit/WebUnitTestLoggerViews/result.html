@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link href="WebUnitTestLoggerViews/css/bootstrap.css" rel="stylesheet">
+        
+        <script>
+            function setHeaderClass ( id, result )
+            {
+                if ( result )
+                    document.getElementById("header_"+id).setAttribute("class", "alert alert-success");
+                else
+                    document.getElementById("header_"+id).setAttribute("class", "alert alert-danger");
+            }
+        </script>
+    </head>
+    
+    <body>
+        <div class="container" style="margin-bottom: 30px;">
+        <?php 
+            $previousMethod = '';
+        ?>
+        <?php foreach ( $this->testCasseResults as $testCaseIndex => $results ): ?>
+            <?php $headerResult = true; ?>
+            <div id="header_<?= $testCaseIndex; ?>" style="margin-top:20px;">
+                <span style="font-size:20px; font-weight:bold;"><?= reset($results)->TestCase; ?></span><br />
+                Ran <?= count($results) ?> assertions of which <?= $this->getSucceededResultCount ( $results ); ?> assertions succeeded
+            </div>
+            
+            <?php foreach ( $results as $index => $result ): ?>                
+                <?php if ( $previousMethod !== $result->TestMethod ): ?>
+                    <?php if($index !== 0) echo '<hr />'; ?>
+                    
+                    <span style="font-weight: bold;"><?=$result->TestMethod; ?></span><br />
+                    <?php $previousMethod = $result->TestMethod; ?>
+                <?php endif; ?>
+                
+                <?php if ( $result->Result ): ?>
+                    <span class="label label-success">Succeeded</span>
+                <?php else: ?>
+                    <?php $headerResult = false; ?>
+                    <span class="label label-danger">Failed</span>
+                <?php endif; ?>
+                
+                <span style="color:<?= $color; ?>;"> <?= implode ( '->', $result->MethodChain ); ?></span>&nbsp;
+                <span style="font-style:italic; color: red;"><?= $result->Message; ?></span><br />
+            <?php endforeach; ?>
+            
+            <script>
+                setHeaderClass ( '<?= $testCaseIndex; ?>', <?= $headerResult ? 1 : 0; ?> );
+            </script>
+        <? endforeach; ?>
+        </div>
+    </body>
+
+</html>
