@@ -35,8 +35,8 @@ Then **$TestFolder** must be "../UnitTests"
 Creating a Unit Test
 ====================
 
-A Unit Test class (or Test Case) can have any name and must always extend from **CFUnitTestCase**. It is important that
-the class name of the Unit Test is the same as the file name.
+A Unit Test class (or Test Case) can have any name and must always extend from **CFUnitTestCase** and therfor 
+this class must be included. It is important that the class name of the Unit Test is the same as the file name.
 
 A test method MUST have **Test_** as prefix. All other methods will not be run by the Test Suite.
 
@@ -68,9 +68,9 @@ An assertion can be made in a fluent way. The following assertions are supported
 
 <pre>
 // Mixed assertion
-$this->Assert($mixed)->Should()->Be('something');
-$this->Assert($mixed)->Should()->Be($someOtherArray);
-$this->Assert($mixed)->Should()->NotBe(true);
+$this->Assert($string)->Should()->Be('something');
+$this->Assert($array)->Should()->Be($someOtherArray);
+$this->Assert($bool)->Should()->NotBe(true);
 
 // Type checking
 $this->Assert($string)->Should()->BeAString();
@@ -84,20 +84,25 @@ $this->Assert($mixed)->Should()->NotBeNull();
 $this->Assert($mixed)->Should()->BeNull()
 $this->Assert($string)->Should()->BeEmpty();
 $this->Assert($string)->Should()->NotBeEmpty();
+
+// String specific assertions
 $this->Assert($string)->Should()->HaveLength(5);
 $this->Assert($string)->Should()->BeEquivalentTo($someString); // Case insensitive compare
 $this->Assert($string)->Should()->StartsWith($someString); // Case sensitive compare
 $this->Assert($string)->Should()->StartsWithEquivalent($someString); // Case insensitive compare
 $this->Assert($string)->Should()->EndWith($someString); // Case sensitive compare
 $this->Assert($string)->Should()->EndWithEquivalent($someString); // Case insensitive compare
-
 $this->Assert($string)->Should()->Contain($someText);
 $this->Assert($string)->Should()->NotContain($someText);
-$this->Assert($array)->Should()->Contain($someOtherArray); // On intersect = success
-$this->Assert($array)->Should()->NotContain($someOtherArray); // When not intersects = success
 $this->Assert($string)->Should()->ContainEquivalentOf($someString); // Case insensitive compare (also on array values)
 $this->Assert($string)->Should()->NotContainEquivalentOf($someString); // Case insensitive compare (also on array values)
 
+// Array specific assertions
+$this->Assert($array)->Should()->Contain($someOtherArray); // On intersect = success
+$this->Assert($array)->Should()->NotContain($someOtherArray); // When not intersects = success
+$this->Assert($array)->Should()->NotContainNull();
+
+// Number assertions
 $this->Assert($int)->Should()->BeGreaterOrEqualTo($number);
 $this->Assert($int)->Should()->BeGreaterThan($number);
 $this->Assert($int)->Should()->BeLessOrEqualTo($number);
@@ -106,13 +111,56 @@ $this->Assert($int)->Should()->BePositive();
 $this->Assert($int)->Should()->BeNegative();
 $this->Assert($int)->Should()->BeInRange($min, $max); //min=1, max=2 and given=2 will result in success
 
+// Date assertions
 $this->Assert($datetime)->Should()->BeAfter($someDatetime);
-$this->Assert($datetime)->Should()->BeAfter($someDatetime);
-$this->Assert($datetime)->Should()->BeAfter($someDatetime);
-$this->Assert($datetime)->Should()->BeAfter($someDatetime);
-$this->Assert($datetime)->Should()->BeAfter($someDatetime);
-$this->Assert()->Should()->
-$this->Assert()->Should()->
-$this->Assert()->Should()->
+$this->Assert($datetime)->Should()->BeBefore($someDatetime);
+$this->Assert($datetime)->Should()->BeOnOrAfter($someDatetime);
+$this->Assert($datetime)->Should()->BeOnOrBefore($someDatetime);
 
+// Throwable assertions
+$this->Assert()->Should()->ShouldThrow($func); Give the method that should be executed as an anonymous function to this method.
+$this->Assert()->Should()->ShouldThrow($func)->WithMessage('Exact exception message');
+$this->Assert()->Should()->ShouldThrow($func)->WithMessage('* psrtial message'); // The asterisk acts as a wild card. Can be used at the beginning, end or both sides of the string
+$this->Assert()->Should()->ShouldNotThrow($func);
+
+
+// Extending assertions with "And()"
+$this->Assert($string)->Should()->BeAString()->And()->HaveLength(5);
 </pre>
+
+
+Mocking
+=======
+
+When you want to mock an object then you must first include the class **CFMock/CFMock.php**. Now mocking will be
+a breeze.
+
+You create a mocked version of an object like this:
+
+<pre>
+$mock = new CFMock(new DummyClass());
+$mock->ACallTo('SomeMethod')->Returns('some value');
+</pre>
+
+Calls can then be made on the **$mock** object.
+
+The mock framework also comes with a few assertions.
+
+<pre>
+ExpectCallCount(2); // Expects that many calls to a certain method
+ExpectMinimumCallCount(2); // Expects at least that many calls to a certain method
+ExpectMaximumCallCount(2); // Expects a maximum of 2 calls to a method, less is fine as well
+ExpectNever(); // A certain method should never be called
+ExpectOnce(); // Only a single call is expected to be made to a certain method
+</pre>
+
+A typical setup for a mock test could be this:
+
+<pre>
+$mock = new CFMock(new DummyClass());
+$mock->ACallTo('SomeMethod')->Returns('some value')->ExpectOnce();
+
+$mock->SomeMethod('message'); // Will return the string: 'some value'
+</pre>
+
+This is obviously not a real world example, but it should illustrate the idea.
