@@ -4,13 +4,38 @@ require_once ( realpath(dirname(__FILE__)) . DIRECTORY_SEPARATOR . '..' . DIRECT
 
 class CFUnitTestInvoker
 {
-    protected $rootFolder;
+    private $testCases = array ( );
+    private $rootFolder;
     protected $testCasseResults = array ( );
     
     public function __construct ( )
     {
         CFUnitTestConfig::Init ( );
         $this->rootFolder =  realpath(dirname(__FILE__)) . '/../../' . trim(CFUnitTestConfig::$TestFolder, '/');
+    }
+    
+    protected function createTestCase ( $testCasePath, array $testMethods )
+    {
+        require_once ( $testCasePath );
+        $testCase = basename ( $testCasePath, '.php' );
+        $instance = new $testCase;
+        
+        $this->testCases[] = new CFTestCaseMethods ( $testCasePath, $instance, $testMethods );
+    }
+    
+    public function addTestCase ( CFTestCaseMethods $testCase )
+    {
+        $this->testCases[] = $testCase;
+    }
+    
+    public function addTestCases ( array $testCases )
+    {
+        $this->testCases = array_merge ( $this->testCases, $testCases );
+    }
+    
+    protected function clearTestCases ( )
+    {
+        $this->testCases = array ( );
     }
     
     protected function getAllTestCases ( )
@@ -30,15 +55,15 @@ class CFUnitTestInvoker
             $instance = new $testCase;
             $testMethods = preg_grep ( '/^Test_/i', get_class_methods ( $instance ) );
             
-            $testCases[] = new CFTestCaseMethods ( $instance, $testMethods );
+            $testCases[] = new CFTestCaseMethods ( $filepath, $instance, $testMethods );
         }
         
         return $testCases;
     }
     
-    protected function executeTestMethods ( array $testCases )
+    protected function executeTestMethods ( )
     {
-        foreach ( $testCases as $testCaseMethods )
+        foreach ( $this->testCases as $testCaseMethods )
         {
             $testCaseMethods->TestCase->SetUpBeforeClass ( );
             foreach ( $testCaseMethods->TestMethods as $testMethod )
