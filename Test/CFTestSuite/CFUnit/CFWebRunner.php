@@ -41,6 +41,13 @@ class CFWebRunner extends CFUnitTestInvoker
                 $this->createTestCase ( $testCase, $testMethods );
             }
         }
+        else
+        {
+            foreach ( $_POST['testcases'] as $testCase )
+            {
+                $this->createTestCase ( $testCase, null );
+            }
+        }
     }
         
     public function GetSucceededResultCount ( array $testCaseResults )
@@ -75,9 +82,6 @@ function CustomErrorHandler ( $errno, $errstr, $errfile, $errline )
         return;
     }
     
-    //echo '<div class="container">';
-    //echo '<div class="alert alert-danger" style="margin:0px; padding:5px;">';
-
     switch ($errno) {
     case E_USER_ERROR:
         $error = new Error();
@@ -85,8 +89,9 @@ function CustomErrorHandler ( $errno, $errstr, $errfile, $errline )
         $error->ErrorString = $errstr;
         $error->ErrorFile = $errfile;
         $error->ErrorLine = $errfile;
-        $error->ErrorMessage = "<strong>ERROR</strong> $errno <br />\n
-        Fatal error on line $errline in file $errfile";
+        $error->ErrorMessage = "<strong>ERROR</strong> $errno : 
+        Fatal error on line $errline in file $errfile <br />
+        $errstr";
         CFWebRunner::$Errors[] = $error;
         break;
 
@@ -96,8 +101,9 @@ function CustomErrorHandler ( $errno, $errstr, $errfile, $errline )
         $error->ErrorString = $errstr;
         $error->ErrorFile = $errfile;
         $error->ErrorLine = $errfile;
-        $error->ErrorMessage = "<strong>Warning</strong> $errno <br />\n
-        Fatal error on line $errline in file $errfile";
+        $error->ErrorMessage = "<strong>Warning</strong> $errno : 
+        Fatal error on line $errline in file $errfile <br />
+        $errstr";
         CFWebRunner::$Errors[] = $error;
         break;
 
@@ -107,8 +113,9 @@ function CustomErrorHandler ( $errno, $errstr, $errfile, $errline )
         $error->ErrorString = $errstr;
         $error->ErrorFile = $errfile;
         $error->ErrorLine = $errfile;
-        $error->ErrorMessage = "<strong>Notice</strong> $errno <br />\n
-        Fatal error on line $errline in file $errfile";
+        $error->ErrorMessage = "<strong>Notice</strong> $errno : 
+        Fatal error on line $errline in file $errfile <br />
+        $errstr";
         CFWebRunner::$Errors[] = $error;
         break;
 
@@ -118,14 +125,12 @@ function CustomErrorHandler ( $errno, $errstr, $errfile, $errline )
         $error->ErrorString = $errstr;
         $error->ErrorFile = $errfile;
         $error->ErrorLine = $errfile;
-        $error->ErrorMessage = "<strong>Unknown Error</strong> $errno <br />\n
-        Fatal error on line $errline in file $errfile";
+        $error->ErrorMessage = "<strong>Error</strong> $errno : 
+        Fatal error on line $errline in file $errfile <br />
+        $errstr";
         CFWebRunner::$Errors[] = $error;
         break;
     }
-    
-    //echo '</div>';
-    //echo '</div>';
 
     /* Don't execute PHP internal error handler */
     return true;

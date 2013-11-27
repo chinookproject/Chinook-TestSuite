@@ -14,11 +14,21 @@ class CFUnitTestInvoker
         $this->rootFolder =  realpath(dirname(__FILE__)) . '/../../' . trim(CFUnitTestConfig::$TestFolder, '/');
     }
     
-    protected function createTestCase ( $testCasePath, array $testMethods )
+    /**
+     * Creates test case object
+     * 
+     * If $testMethods is left empty then it will resolve all test methods automatically
+     */
+    protected function createTestCase ( $testCasePath, $testMethods = null )
     {
         require_once ( $testCasePath );
         $testCase = basename ( $testCasePath, '.php' );
         $instance = new $testCase;
+        
+        if ( $testMethods === null )
+        {
+            $testMethods = preg_grep ( '/^Test_/i', get_class_methods ( $instance ) );
+        }
         
         $this->testCases[] = new CFTestCaseMethods ( $testCasePath, $instance, $testMethods );
     }
