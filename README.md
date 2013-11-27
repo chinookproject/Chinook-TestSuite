@@ -169,3 +169,10 @@ Run Unit Tests
 ==============
 
 When you have created your unit tests then these can easily be run from the browser. Simply browse to **"TestSuit/CFunit/CFWebRunner.php"**
+
+In there you can simply hit the "Run Tests" button or select the tests you want to run.
+
+Screenshot
+==========
+
+![Example test with selected tests](http://i.imgur.com/5lC8o2f.png)
