@@ -1,8 +1,18 @@
 <?php
+require_once ( '../../../Core/CFBootstrap.php' );
 
 class CFUnitTestConfig
 {
-    public static $TestFolder = '/Example';
+    public static $TestFolder = '/UnitTests';
+    
+    // Initialize yor spl_autoload for example, so your classes/interfaces can still be 
+    // loaded automatically
+    public static function Init ( )
+    {
+        $rootPath = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . 'chinook/';
+        $bootstrapper = new \Core\CFBootstrap ( );
+        $bootstrapper->InitAutoload ( $rootPath );
+    }
 }
 
 ?>

@@ -9,6 +9,7 @@ class CFUnitTestInvoker
     
     public function __construct ( )
     {
+        CFUnitTestConfig::Init ( );
         $this->rootFolder =  realpath(dirname(__FILE__)) . '/../../' . trim(CFUnitTestConfig::$TestFolder, '/');
     }
     

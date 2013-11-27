@@ -34,6 +34,10 @@ class CFWebRunner extends CFUnitTestInvoker
     }
 }
 
+$now = microtime(true);
 $run = new CFWebRunner ( );
+$now = microtime(true) - $now;
+echo "This test was run in $now seconds";
+
 
 ?>

@@ -79,7 +79,7 @@ class CFUnitTestCase
                 }
                 else
                 {
-                    $this->addResult ( 'Expected asserted object to be [' . $mixed . '], but ('.gettype($this->assertObject).')[' . $this->assertObject . '] was given', false );
+                    $this->addResult ( 'Expected asserted object to be ('.gettype($mixed).')[' . $mixed . '], but ('.gettype($this->assertObject).')[' . $this->assertObject . '] was given', false );
                 }
             }
         }
@@ -193,7 +193,7 @@ class CFUnitTestCase
     {
         if ( $this->assertObject !== null )
         {
-            $this->addResult ( 'Expected asserted object to be NULL, but ('.gettype($this->assertObject).')[' . $this->assertObject . '] was given', false );
+            $this->addResult ( 'Expected asserted object to be NULL, but ('.gettype($this->assertObject).')[' . print_r($this->assertObject, true) . '] was given', false );
         }
         
         $this->addMethodChain ( 'BeNull()' );
