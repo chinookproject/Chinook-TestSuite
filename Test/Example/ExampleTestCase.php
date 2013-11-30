@@ -58,7 +58,8 @@ class ExampleTestCase extends CFUnitTestCase
         // Arrange
         $message = 'something';
         $randomNumber = 5;
-        $mock = new CFMock(new DummyClass());
+        //$mock = new CFMock(new DummyClass());
+        $mock = CFMock::Create(new DummyClass());
         
         // This WILL be asserted
         $mock->ACallTo('RandomNumber')->Returns( $randomNumber )->ExpectOnce();
