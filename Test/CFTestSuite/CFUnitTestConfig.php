@@ -9,9 +9,7 @@ class CFUnitTestConfig
     // loaded automatically
     public static function Init ( )
     {
-        $rootPath = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . 'chinook/';
-        $bootstrapper = new \Core\CFBootstrap ( );
-        $bootstrapper->InitAutoload ( $rootPath );
+        // A place to load custom code like an autoloader class
     }
 }
 
