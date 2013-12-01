@@ -3,7 +3,7 @@ require_once ( '../../../Core/CFBootstrap.php' );
 
 class CFUnitTestConfig
 {
-    public static $TestFolder = '/UnitTests';
+    public static $TestFolder = '/Example';
     
     // Initialize yor spl_autoload for example, so your classes/interfaces can still be 
     // loaded automatically
