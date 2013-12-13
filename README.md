@@ -138,8 +138,11 @@ a breeze.
 You create a mocked version of an object like this:
 
 <pre>
-$mock = new CFMock::Create(new DummyClass());
+$mock = new CFMock::Create( 'DummyClass' );
 $mock->ACallTo('SomeMethod')->Returns('some value');
+
+// Or even namespaced classes can be loaded:
+$mock = new CFMock::Create( '\Some\Namespace\DummyClass' );
 </pre>
 
 Calls can then be made on the **$mock** object.
@@ -157,7 +160,7 @@ ExpectOnce(); // Only a single call is expected to be made to a certain method
 A typical setup for a mock test could be this:
 
 <pre>
-$mock = new CFMock::Create(new DummyClass());
+$mock = new CFMock::Create( 'DummyClass' );
 $mock->ACallTo('SomeMethod')->Returns('some value')->ExpectOnce();
 
 $mock->SomeMethod('message'); // Will return the string: 'some value'
