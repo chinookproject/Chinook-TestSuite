@@ -7,7 +7,6 @@ require_once ( '{mock_file}' );
 class CFMockedObject {mock_class}
 {
     protected $fixtures = array ( );
-    protected $mockInstance;
     protected $testIndex = 0;
     protected $currentTestCase;
     protected $testResults = array ( );
@@ -15,11 +14,6 @@ class CFMockedObject {mock_class}
     // Mock
     protected $methodName;
     protected $args;
-    
-    public function __construct ( $instance )
-    {
-        $this->mockInstance = $instance;
-    }
     
     public function __destruct ( )
     {        
@@ -94,12 +88,7 @@ class CFMockedObject {mock_class}
     }
     
     public function __call ( $methodName, $args )
-    {
-        if ( !method_exists ( $this->mockInstance, $methodName ) )
-        {
-            throw new \Exception("Method '$methodName' doesn't exist on object");
-        }
-        
+    {        
         $matchingFixture = $this->resolveMatchingMethod ( $methodName, $args );
         
         if ( $matchingFixture !== null )

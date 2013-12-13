@@ -6,16 +6,41 @@ class CFMock
 {
     private static $mockCount = 0;
     
-    public static function Create ( $instance )
+    public static function Create ( $className )
     {
         self::$mockCount++;
         $mockClass = 'CFMockedObject_' . self::$mockCount;
         
-        $className = get_class ( $instance );
         $reflector = new \ReflectionClass ( $className );
         $classFile = $reflector->getFileName ( );
         $interfaces = $reflector->getInterfaceNames ( );
         $methods = $reflector->getMethods(ReflectionMethod::IS_PUBLIC);
+        
+        $constructParams = array ( );        
+        if ( $reflector->hasMethod('__construct') )
+        {
+            $constructParamCount = $reflector->getMethod('__construct')->getParameters();
+            foreach ( $constructParamCount as $param )
+            {
+                $paramValue = null;
+                if($param->isArray())
+                {
+                    $type = 'array';
+                }
+                else
+                {
+                    $type = ($param->getClass() ? $param->getClass()->name : '' );
+                    if ( $type == 'stdClass' )
+                        $paramValue = new stdClass();
+                    else
+                        $paramValue = null;
+                }
+                
+                $paramStrings[] = $type . ' $'.$param->name;
+                
+                $constructParams[] = $paramValue;
+            }
+        }
         
         $methodStrings = '';
         foreach ( $methods as $method )
@@ -30,7 +55,7 @@ class CFMock
             DIRECTORY_SEPARATOR . 'CFMock' . 
             DIRECTORY_SEPARATOR . 'CFMockedObject.php' );
             
-        $implements = ( empty($interfaces) ? '' : 'implements' . implode(', ', $interfaces) );
+        $implements = ( empty($interfaces) ? '' : 'implements ' . implode(', ', $interfaces) );
             
         $mockContent = str_replace ( '{mock_file}', $classFile, $mockContent );
         $mockContent = str_replace ( '{mock_class}', $implements, $mockContent );
@@ -39,15 +64,27 @@ class CFMock
         
         eval ( $mockContent );
         
-        return new $mockClass ( $instance );
+        $reflectionMock = new \ReflectionClass($mockClass); 
+        $myClassInstance = $reflectionMock->newInstanceArgs($constructParams); 
+        
+        return $myClassInstance;
     }
     
     private static function createMethodString ( $method, $params )
-    {
+    {        
         $paramStrings = array ( );
         foreach ( $params as $param )
         {
-            $paramStrings[] = '$'.$param->name;
+            if($param->isArray())
+            {
+                $type = 'array';
+            }
+            else
+            {
+                $type = ($param->getClass() ? $param->getClass()->name : '' );
+            }
+            
+            $paramStrings[] = $type . ' $'.$param->name;
         }
         
         $method = 'public function '.$method->name.' ( '.implode(', ', $paramStrings).' ) { return $this->__call(\''.$method->name.'\', array() ); }  ';
