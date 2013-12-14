@@ -1,7 +1,7 @@
 Chinook-TestSuite
 =================
 
-Chinook Unit Test &amp; Mocking Framework
+Chinook Unit Test &amp; Mocking Framework for PHP
 
 Installation &amp; Configuration
 ============
