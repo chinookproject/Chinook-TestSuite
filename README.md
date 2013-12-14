@@ -1,7 +1,9 @@
 Chinook-TestSuite
 =================
 
-Chinook Unit Test &amp; Mocking Framework for PHP
+Chinook Unit Test &amp; Mocking Framework for PHP.
+
+Create mocks and stubs on the fly with the Mock Framework and Unit test your code with the Unit Test framework. This all comes in one pakcage, ready and easy to be used!
 
 Installation &amp; Configuration
 ============
