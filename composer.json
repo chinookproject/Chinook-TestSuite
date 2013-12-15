@@ -1,0 +1,15 @@
+{
+    "name": "chinook/test-suite",
+    "description": "A unit test and mocking framework for PHP",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chinook Framework",
+            "email": "sevenrow2@yahoo.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+
+    }
+}
